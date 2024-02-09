@@ -54,6 +54,9 @@ After about 10 seconds your workflow run will pop up with a orange circle.  You 
 
 It should turn green and generate a [pull request](https://github.com/BalancerMaxis/ecosystem_balances_example/pull/1/files) in the Pull Requests tab if everything worked.  If not it will turn red and you can ask the Maxis or read the output to understand what happened.  There is an end checksum in place, so the job will not finish if there is more than a 1e-10 token difference in the total amount of BPTs and the total amount reported after handling ecosystem substitutions.
 
+### Low-code fanciness
+You can change the github action to fix the pool id and gauge in your fork, and remove these as inputs.  Then you only have to put in the block each time.  You could also modify the script slightly to give unique naming to the file that makes sense for you.
+
 ## How can I understand this more?
 Tag 0.0.1 of this repo pulls this [commit on bal_addresses](https://github.com/BalancerMaxis/bal_addresses/tree/2c7028c745b4a220906ed1b3bb493fa7ba32851d).
 
