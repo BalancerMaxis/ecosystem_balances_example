@@ -54,10 +54,3 @@ jobs:
           labels: "Automatic Run"
           branch-suffix: timestamp
 
-  run_reports:
-    needs: merge_jsons
-    uses: "BalancerMaxis/multisig-ops/.github/workflows/run_reports_reusable.yaml@main"
-    secrets: inherit
-    with:
-      pr_number: ${{ needs.merge_jsons.outputs.pull-request-number }}
-      checkout_ref: "gha-balances-csv"
