@@ -1,0 +1,63 @@
+name: Get ecosystem deposits by user csv for a single pool (mainnet only for now)
+
+on:
+  workflow_dispatch:
+    inputs:
+      POOL_ID:
+        description: "The PoolID of the pool to query"
+        required: true
+      GAUGE:
+        description: "The address gauge for the pool above"
+        required: true
+      BLOCK:
+        description: "The block number to measure at"
+        required: true
+
+
+jobs:
+  generate-csv:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Cache Compiler Installations
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.solcx
+            ~/.vvm
+          key: compiler-cache
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Generate CSV
+        env:
+          POOL_ID: ${{ github.event.inputs.POOL_ID }}
+          GAUGE: ${{ github.event.inputs.GAUGE }}
+          BLOCK: ${{ github.event.inputs.BLOCK }}
+        run: |
+          pip3 install -r requirements.txt
+          python ./ecosystem_deposits_for_1_pool.py
+
+      - name: Create PR
+        id: cpr
+        uses: peter-evans/create-pull-request@v5
+        with:
+          commit-message: "CSV generated"
+          title: "Action Generated CSV"
+          branch: gha-csv-merge
+          delete-branch: true
+          labels: "Automatic Run"
+          branch-suffix: timestamp
+
+  run_reports:
+    needs: merge_jsons
+    uses: "BalancerMaxis/multisig-ops/.github/workflows/run_reports_reusable.yaml@main"
+    secrets: inherit
+    with:
+      pr_number: ${{ needs.merge_jsons.outputs.pull-request-number }}
+      checkout_ref: "gha-balances-csv"
