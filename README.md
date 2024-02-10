@@ -29,7 +29,7 @@ Go to the info tab and turn `Dev Mode` on.  Now you can see the `Balancer Pool I
 
 ![img.png](images/img.png)
 
-## No-code way to use with Github
+
 This repo has a github action that runs on a regular basis and maintains [csvs](https://github.com/BalancerMaxis/ecosystem_balances_example/tree/action-results/out) for each configured pool from the first block after midnight each day (going forward from 2024-02-10).
 
 To generate a custom run, you can use [This Github Action](https://github.com/BalancerMaxis/ecosystem_balances_example/actions/workflows/multipool-cron.yaml).  Click run workflow, and then fill in the inputs which are the same as described above.  Hit run, wait for the action to finish (green).  You can click in to check the run logs.   
