@@ -2,7 +2,7 @@ name: Generate Ecosystem Deposit CSVs
 
 on:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "* * * * *"
 
 jobs:
   generate-csv-files:
