@@ -1,6 +1,8 @@
 name: Generate Ecosystem Deposits V2 (multipool)
 
 on:
+  schedule:
+    - cron: "* * * * *"
   workflow_dispatch:
     inputs:
       POOL_ID:
@@ -9,8 +11,7 @@ on:
         description: "The block number to measure at, if unset will use timestamp."
       TIMESTAMP:
         description: "A timestamp to take the next block after if BLOCK is undefined, if also undefined will use 5 minutes ago."
-  schedule:
-    - cron: "* * * * *"
+
 
 
 
