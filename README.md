@@ -1,4 +1,12 @@
 # Ecosystem Balances 
+## Simple Single Pool Script
+See [ecosystem_deposits_for_1_pool.md](ecosystem_deposits_for_1_pool.md) for the origianl version of this README and instructions on how to use the simpler single pool depositor from the command line.
+
+## Multipool Automation
+Most of this README describes [generate_ecosystem.deposits.py](generate_ecosystem_deposits.py).
+
+**This script is mainnet only for now.  It could easily be extended so let us know if you need it on other chains**
+
 This repo is a demonstration of how to use an API in development to generate user balances across the Balancer ecosystem.
 ###### Note that BPT refers to Balancer Pool Token, or the deposit token that comes from depositing in a gauge
 
@@ -8,23 +16,32 @@ This repo is a demonstration of how to use an API in development to generate use
 - BPTs staked in the Balancer Gauge
 - BPTs deposited into Aura
 
-### How to run it:
-There are 3 inputs.  A pool_id, a gauge address and a block number to count at.  The easiest way to get all of this at once is to find the pool on Aura, here is an example for [ezETH/WETH](https://app.aura.finance/#/1/pool/189).
+### How to configure it:
+The [run_pool.json](./run_pools.json) configures what pools are available to run and requires a name, pool_id and gauge address for each monitored pool.  You can find the POOL_ID and GAUGE address for a pool on AURA.
 
-Go to the info tab and turn `Dev Mode` on.  Now you can see the `Balancer Pool Id` and `Balancer Gauge`.  A recent block at the time of this writing is `19192586`.
+#### Using Aura to get pool_ID and Gauge Address
+Find the pool on Aura like this: [ezETH/WETH](https://app.aura.finance/#/1/pool/189).
 
+Go to the info tab and turn `Dev Mode` on.  Now you can see the `Balancer Pool Id` and `Balancer Gauge`.  
 
 ![img.png](images/img.png)
 
-
-With this data at hand, here is how you would run at the command line using this file:
+### How to run it
+Like this:
 ```shell
-export POOL_ID=0x596192bb6e41802428ac943d2f1476c1af25cc0e000000000000000000000659
-export GAUGE=0xa8b309a75f0d64ed632d45a003c68a30e59a1d8b
-export BLOCK=19192586
+unset BLOCK
+unset TIMESTAMP
+unset POOL_ID
 pip3 install -r requirements.txt
 python3 ecosystem_deposits_for_1_pool.py
 ```
+Note that the code above unsets 3 environment vairables.  You can instead set them to something as described here:
+```shell
+export BLOCK=1234567 # Run on block 1234567, ignore timestamp.
+export TIMESTAMP=1707519600 # Run at the next block after the UTC unixtimestap 1707519600 (around midnight on february 10th), will be ignored if BLOCK is set.
+export POOL_ID=0x05ff47afada98a98982113758878f9a8b9fdda0a000000000000000000000645 # Only run on the weETH/rETH pool.  If unset runs on all known pools.
+```
+
 
 You should get some results like this.  You can ignore the preferential gauge messages
 
@@ -35,32 +52,24 @@ Found 13376.424484124613 of which 12526.432768559198 where staked by an address 
 CSV file generated successfully:  output.json
 ```
 
+The under [./out](./out) you should find a csv for the block and pool_id of all generated pools under directories by name.
+
 Check that the program completes and that the warnings are about very smol rounding errors you can accept.
 
-A file named `output.csv` has been created that has BPT balances per user.  
-
-to understand user balances of one component of the pool, you'll need to multiply those BPT balances by the amount of the a specific that was in each BPT on that block.
+To understand user balances of one component of the pool, you'll need to multiply those BPT balances by the amount of the a specific that was in each BPT on that block.
 
 ## No-code way to run with github
-This repo has a github action that performs the  above steps.  To use it:
+This repo has a github action that performs the  above steps jsut after midnight each night generating csvs for all configured pools from a block just after midnight UTC.
 
-fork the repo, and then go to actions tab on your forked repo.  Select the `Get ecosystem deposits by user csv for a singlke pool` action.  Click `Run Workflow`.  Enter the same details into the boxes and push the Green Button.
+To generate a custom run, you can use [this github action]().  Click run workflow, and then fill in the inputs which are the same as descrbed above.  Hit run, wait for the action to finish (green), and then check the [action-results]() branch to find your results.
 
-Here is the [action page on the main (unforked) repo.](https://github.com/BalancerMaxis/ecosystem_balances_example/actions). 
-Here is a screenshot of everything entered using the same values used above:
-![img_1.png](images/img_1.png)
+You may need to ask for help from the Maxis to do this and/or fork the repo.  We're happy to help you setup a custom fork.  This is just a POC. 
 
-After about 10 seconds your workflow run will pop up with a orange circle.  You can [click on it to watch it work.](https://github.com/BalancerMaxis/ecosystem_balances_example/actions/runs/7849042795).
-
-It should turn green and generate a [pull request](https://github.com/BalancerMaxis/ecosystem_balances_example/pull/1/files) in the Pull Requests tab if everything worked.  If not it will turn red and you can ask the Maxis or read the output to understand what happened.  There is an end checksum in place, so the job will not finish if there is more than a 1e-10 token difference in the total amount of BPTs and the total amount reported after handling ecosystem substitutions.
-
-### Low-code fanciness
-You could change the github action to fix the pool id and gauge in your fork, and remove these as inputs.  Then you only have to put in the block each time.  You could also modify the script slightly to give unique naming to the file that makes sense for you.
-
-You could also include a web3 RPC, and use Web3 to get the current block number and even check that the sum of all the balances is close to what is onchain.  With this in place, the final input could be removed from the action and it could be moved to run on cron schedule.
+## OK cool I want to use this github thing for my points system
+If you are going to use this in production, speak to the Maxis.  We can set you up with a fork repo where you have more control and keep an eye on things.
 
 ## How can I understand this more?
-Tag 0.0.1 of this repo pulls this [commit on bal_addresses](https://github.com/BalancerMaxis/bal_addresses/tree/2c7028c745b4a220906ed1b3bb493fa7ba32851d).
+Tag 0.0.2 of this repo pulls this [commit on bal_addresses](https://github.com/BalancerMaxis/bal_addresses/tree/2c7028c745b4a220906ed1b3bb493fa7ba32851d).
 
 A high level understanding of the calculation logic can be found [here](https://github.com/BalancerMaxis/bal_addresses/blob/2c7028c745b4a220906ed1b3bb493fa7ba32851d/bal_addresses/ecosystem_apis.py#L26).
 
