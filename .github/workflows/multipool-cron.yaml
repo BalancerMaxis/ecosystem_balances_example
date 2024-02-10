@@ -8,11 +8,9 @@ on:
       BLOCK:
         description: "The block number to measure at, if unset will use timestamp."
       TIMESTAMP:
-        description: "A timestamp to take the next block after if BLOCK is undefined, if also undefined will use 5 minutes ago.  If it is 0 it will use the most recent midnight UTC"
+        description: "A timestamp to take the next block after if BLOCK is undefined, if also undefined will use 5 minutes ago."
   schedule:
     - cron: "*/5 * * * *"
-      inputs:
-        TIMESTAMP: "0"
 
 
 
@@ -29,6 +27,9 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.9
+      - name: Setup environment
+
+        if: ${{ !contains(inputs.should_run, 'false') }}
 
       - name: Generate CSV
         env:
@@ -36,8 +37,8 @@ jobs:
           TIMESTAMP: ${{ github.event.inputs.TIMESTAMP }}
           BLOCK: ${{ github.event.inputs.BLOCK }}
         run: |
-          # If no timestamp is provided, use the most recent midnight UTC.
-          if (TIMESTAMP + 0 ==  0); then
+          # If this is a cron job, use the most recent midnight UTC.
+          if [ "$GITHUB_EVENT_NAME" == "schedule" ]; then
               current_date_utc=$(date -u "+%Y-%m-%d")
               midnight_utc=$(date -ud "$current_date_utc" +%s)
               export TIMESTAMP="$midnight_utc"
