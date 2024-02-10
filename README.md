@@ -24,18 +24,29 @@ Find the pool on Aura like this: [ezETH/WETH](https://app.aura.finance/#/1/pool/
 
 Go to the info tab and turn `Dev Mode` on.  Now you can see the `Balancer Pool Id` and `Balancer Gauge`.  
 
+
 ![img.png](images/img.png)
 
-### How to run it
+## No-code way to use with Github
+This repo has a github action that performs the  above steps jsut after midnight each night generating csvs for all configured pools from a block just after midnight UTC.
+
+To generate a custom run, you can use [This Github Action](https://github.com/BalancerMaxis/ecosystem_balances_example/actions/workflows/multipool-cron.yaml).  Click run workflow, and then fill in the inputs which are the same as described above.  Hit run, wait for the action to finish (green).  You can click in to check the run logs.   
+
+Once the action is complete  [action-results](https://github.com/BalancerMaxis/ecosystem_balances_example/tree/action-results/out) branch to find your results.
+
+You may need to ask for help from the Maxis to do this and/or fork the repo.  We're happy to help you setup a custom fork.  This is a POC and there is not the best security controls on the action-results branch. 
+
+
+### How to run it on my own environment
 Like this:
 ```shell
 unset BLOCK
 unset TIMESTAMP
 unset POOL_ID
 pip3 install -r requirements.txt
-python3 ecosystem_deposits_for_1_pool.py
+python3 generate_ecosystem_deposits.py
 ```
-Note that the code above unsets 3 environment vairables.  You can instead set them to something as described here:
+Note that the code above unsets 3 environment variables.  You can instead set them to something as described here:
 ```shell
 export BLOCK=1234567 # Run on block 1234567, ignore timestamp.
 export TIMESTAMP=1707519600 # Run at the next block after the UTC unixtimestap 1707519600 (around midnight on february 10th), will be ignored if BLOCK is set.
@@ -58,19 +69,14 @@ Check that the program completes and that the warnings are about very smol round
 
 To understand user balances of one component of the pool, you'll need to multiply those BPT balances by the amount of the a specific that was in each BPT on that block.
 
-## No-code way to run with github
-This repo has a github action that performs the  above steps jsut after midnight each night generating csvs for all configured pools from a block just after midnight UTC.
 
-To generate a custom run, you can use [This Github Action](https://github.com/BalancerMaxis/ecosystem_balances_example/actions/workflows/multipool-cron.yaml).  Click run workflow, and then fill in the inputs which are the same as described above.  Hit run, wait for the action to finish (green), and then check the [action-results]() branch to find your results.
-
-You may need to ask for help from the Maxis to do this and/or fork the repo.  We're happy to help you setup a custom fork.  This is just a POC. 
 
 ## OK cool I want to use this github thing for my points system
 If you are going to use this in production, speak to the Maxis.  We can set you up with a fork repo where you have more control and keep an eye on things.
 
 ## How can I understand this more?
-Tag 0.0.2 of this repo pulls this [commit on bal_addresses](https://github.com/BalancerMaxis/bal_addresses/tree/2c7028c745b4a220906ed1b3bb493fa7ba32851d).
+Tag 0.0.2 of this repo pulls this [commit on bal_addresses](https://github.com/BalancerMaxis/bal_addresses/tree/83a122b0349cde23a0643b83e4adf50859af24fe/bal_addresses).  You can find the classes used in this code there.  You can find the graphql queries and endpoints used [here](https://github.com/BalancerMaxis/bal_addresses/blob/83a122b0349cde23a0643b83e4adf50859af24fe/bal_addresses/queries.py)
 
-A high level understanding of the calculation logic can be found [here](https://github.com/BalancerMaxis/bal_addresses/blob/2c7028c745b4a220906ed1b3bb493fa7ba32851d/bal_addresses/ecosystem_apis.py#L26).
+A high level understanding of the calculation logic can be understood by reading through the logic of [generate_ecosystem_deposits.py](./generate_ecosystem_deposits.py)
 
-This poc will eventually result in a release to bal_addresses, and may eventually include more ecosystem positions.  This repo may be updated to use that, but tag 0.0.1 will remain fixed to the current logic.
+This PoC will eventually result in a release to bal_addresses, and may eventually include more ecosystem positions.  This repo may be updated to use that, but tag 0.0.1 will remain fixed to the current logic.
