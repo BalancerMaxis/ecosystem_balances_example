@@ -1,21 +1,11 @@
-name: Generate Ecosystem Deposits V2 (multipool)
+name: Generate Ecosystem Deposit CSVs
 
 on:
-  workflow_dispatch:
-    inputs:
-      POOL_ID:
-        description: "The pool_id of the pool to query, must match a pool in run_pools.json, leave blank for all"
-      BLOCK:
-        description: "The block number to measure at, if unset will use timestamp."
-      TIMESTAMP:
-        description: "A timestamp to take the next block after if BLOCK is undefined, if also undefined will use 5 minutes ago."
   schedule:
-    - cron: "* 10 * * *"
-
-
+    - cron: "* * * * *"
 
 jobs:
-  generate-csvs:
+  generate-csv-files:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -29,10 +19,6 @@ jobs:
           python-version: 3.9
 
       - name: Generate CSV
-        env:
-          POOL_ID: ${{ github.event.inputs.POOL_ID }}
-          TIMESTAMP: ${{ github.event.inputs.TIMESTAMP }}
-          BLOCK: ${{ github.event.inputs.BLOCK }}
         run: |
           # If this is a cron job, use the most recent midnight UTC.
           if [ "$GITHUB_EVENT_NAME" == "schedule" ]; then
