@@ -10,7 +10,7 @@ on:
       TIMESTAMP:
         description: "A timestamp to take the next block after if BLOCK is undefined, if also undefined will use 5 minutes ago."
   schedule:
-    - cron: "* 10 * * *"
+    - cron: "15 * * * *"
 
 
 
