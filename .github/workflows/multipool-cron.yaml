@@ -8,9 +8,12 @@ on:
       BLOCK:
         description: "The block number to measure at, if unset will use timestamp."
       TIMESTAMP:
-        description: "A timestamp to take the next block after if BLOCK is undefined, if also undefined will use 5 minutes ago."
+        description: "A timestamp to take the next block after if BLOCK is undefined, if also undefined will use 5 minutes ago.  If it is 0 it will use the most recent midnight UTC"
   schedule:
     - cron: "*/5 * * * *"
+      inputs:
+        POOL_ID: 0
+
 
 
 jobs:
@@ -34,7 +37,7 @@ jobs:
           BLOCK: ${{ github.event.inputs.BLOCK }}
         run: |
           # If no timestamp is provided, use the most recent midnight UTC.
-          if [ -z "$TIMESTAMP" ]; then
+          if (TIMESTAMP + 0 ==  0); then
               current_date_utc=$(date -u "+%Y-%m-%d")
               midnight_utc=$(date -ud "$current_date_utc" +%s)
               export TIMESTAMP="$midnight_utc"
