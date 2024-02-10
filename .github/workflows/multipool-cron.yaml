@@ -1,11 +1,11 @@
-name: Generate Ecosystem Deposits V2 (multipool)
+name: Generate Ecosystem Deposit CSVs
 
 on:
   schedule:
-    - cron: "* * * * *"
+    - cron: "*/5 * * * *"
 
 jobs:
-  generate-csvs:
+  generate-csv-files:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -19,10 +19,6 @@ jobs:
           python-version: 3.9
 
       - name: Generate CSV
-        env:
-          POOL_ID: ${{ github.event.inputs.POOL_ID }}
-          TIMESTAMP: ${{ github.event.inputs.TIMESTAMP }}
-          BLOCK: ${{ github.event.inputs.BLOCK }}
         run: |
           # If this is a cron job, use the most recent midnight UTC.
           if [ "$GITHUB_EVENT_NAME" == "schedule" ]; then
