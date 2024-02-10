@@ -61,7 +61,7 @@ To understand user balances of one component of the pool, you'll need to multipl
 ## No-code way to run with github
 This repo has a github action that performs the  above steps jsut after midnight each night generating csvs for all configured pools from a block just after midnight UTC.
 
-To generate a custom run, you can use [this github action]().  Click run workflow, and then fill in the inputs which are the same as descrbed above.  Hit run, wait for the action to finish (green), and then check the [action-results]() branch to find your results.
+To generate a custom run, you can use [This Github Action](https://github.com/BalancerMaxis/ecosystem_balances_example/actions/workflows/multipool-cron.yaml).  Click run workflow, and then fill in the inputs which are the same as described above.  Hit run, wait for the action to finish (green), and then check the [action-results]() branch to find your results.
 
 You may need to ask for help from the Maxis to do this and/or fork the repo.  We're happy to help you setup a custom fork.  This is just a POC. 
 

@@ -19,9 +19,9 @@ from datetime import datetime, timezone
 
 # Load config from environment
 # Set BLOCK to run on a specific block if unset use timestamp
-BLOCK = os.environ.get("BLOCK")
+BLOCK = int(os.environ.get("BLOCK"))
 # Set TIMESTAMP to find the next block after a UTC timestamp if BLOCK is missing
-TIMESTAMP = os.environ.get("TIMESTAMP")
+TIMESTAMP = int(os.environ.get("TIMESTAMP"))
 # Set pool_id to run on only 1 of the pool's listed on the top of this file instead of all of them
 POOL_ID = os.environ.get("POOL_ID")
 # Multichain SOON:tm:
