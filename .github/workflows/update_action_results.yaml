@@ -1,0 +1,22 @@
+name: Merge Main into Action Results
+
+on:
+  schedule:
+    - cron: "0 * * * *"  # Run every hour
+
+jobs:
+  merge-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Merge Main into Action Results
+        uses: peter-evans/create-pull-request@v3
+        with:
+          branch: action-results
+          base: main
+          commit-message: "Merge in code/config updates from main"
+          title: "Merge in code/config updates from main"
+          body: "This PR was automatically created by a GitHub Actions workflow."

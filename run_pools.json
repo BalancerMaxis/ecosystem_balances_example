@@ -1,0 +1,25 @@
+{
+  "mainnet": [
+    {
+      "name": "weETH/rETH",
+      "pool_id": "0x05ff47afada98a98982113758878f9a8b9fdda0a000000000000000000000645",
+      "gauge": "0xc859bf9d7b8c557bbd229565124c2c09269f3aef"
+    },
+    {
+      "name": "ezETH/ETH",
+      "pool_id": "0x596192bb6e41802428ac943d2f1476c1af25cc0e000000000000000000000659",
+      "gauge": "0xa8b309a75f0d64ed632d45a003c68a30e59a1d8b"
+    },
+    {
+      "name": "weETH/ezETH/rswETH",
+      "pool_id": "0x848a5564158d84b8a8fb68ab5d004fae11619a5400000000000000000000066a",
+      "gauge": "0x253ED65fff980AEE7E94a0dC57BE304426048b35"
+    },
+    {
+      "name": "rsETH/ETHx",
+      "pool_id": "0x7761b6e0daa04e70637d81f1da7d186c205c2ade00000000000000000000065d",
+      "gauge": "0x0bcdb6d9b27bd62d3de605393902c7d1a2c71aab"
+    }
+  ]
+}
+
