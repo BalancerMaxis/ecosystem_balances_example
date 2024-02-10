@@ -19,9 +19,9 @@ from datetime import datetime, timezone
 
 # Load config from environment
 # Set BLOCK to run on a specific block if unset use timestamp
-BLOCK = int(os.environ.get("BLOCK"))
+BLOCK = os.environ.get("BLOCK")
 # Set TIMESTAMP to find the next block after a UTC timestamp if BLOCK is missing
-TIMESTAMP = int(os.environ.get("TIMESTAMP"))
+TIMESTAMP = os.environ.get("TIMESTAMP")
 # Set pool_id to run on only 1 of the pool's listed on the top of this file instead of all of them
 POOL_ID = os.environ.get("POOL_ID")
 # Multichain SOON:tm:
@@ -34,10 +34,12 @@ with open("run_pools.json", "r") as f:
 q = GraphQueries(CHAIN)
 if not BLOCK:
     if not TIMESTAMP:
-        TIMESTAMP = int(
-            datetime.now(timezone.utc).timestamp() - 300)  # Use 5 minutes ago to make sure subgraphs are up to date
-    BLOCK = q.get_first_block_after_utc_timestamp(TIMESTAMP)
-
+        TIMESTAMP = datetime.now(timezone.utc).timestamp() - 300  # Use 5 minutes ago to make sure subgraphs are up to date
+    BLOCK = q.get_first_block_after_utc_timestamp(int(TIMESTAMP))
+    BLOCK = int(BLOCK)
+    TIMESTAMP = int(TIMESTAMP)
+else:
+    TIMESTAMP = "Block Number Provided"
 
 
 
@@ -133,7 +135,7 @@ def get_ecosystem_balances_w_csv(pool_id: str, gauge_address: str, block: int, n
 
 
 def main():
-    print(f"Using {BLOCK} at unixtime(UTC): {TIMESTAMP}")
+    print(f"Using block {BLOCK} derived from unixtime(UTC): {TIMESTAMP}")
     for poolinfo in POOLS_TO_RUN_ON:
         if POOL_ID and poolinfo["pool_id"] != POOL_ID:
             continue
