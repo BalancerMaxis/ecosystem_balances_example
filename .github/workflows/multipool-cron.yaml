@@ -10,7 +10,8 @@ on:
       TIMESTAMP:
         description: "A timestamp to take the next block after if BLOCK is undefined, if also undefined will use 5 minutes ago."
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "* 10 * * *"
+
 
 
 jobs:
@@ -30,16 +31,19 @@ jobs:
       - name: Generate CSV
         env:
           POOL_ID: ${{ github.event.inputs.POOL_ID }}
-          TIMESTAMP: ${{ github.event.inputs.GAUGE }}
+          TIMESTAMP: ${{ github.event.inputs.TIMESTAMP }}
           BLOCK: ${{ github.event.inputs.BLOCK }}
         run: |
-          # If no timestamp is provided, use the most recent midnight UTC.
-          if [ -z "$TIMESTAMP" ]; then
+          # If this is a cron job, use the most recent midnight UTC.
+          if [ "$GITHUB_EVENT_NAME" == "schedule" ]; then
               current_date_utc=$(date -u "+%Y-%m-%d")
               midnight_utc=$(date -ud "$current_date_utc" +%s)
               export TIMESTAMP="$midnight_utc"
           fi
           pip3 install -r requirements.txt
           python ./generate_ecosystem_deposits.py
-          git commit -A
+          git config --global user.email "maxis@balancer.rocks"
+          git config --global user.name "Github Action"
+          git add -A
+          git commit -m "Github actions run - time: $TIMESTAMP,  block: $BLOCK, pool_id: $POOL_ID"
           git push origin action-results
