@@ -19,7 +19,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-        ref: action-results
+        with:
+          ref: action-results
 
       - name: Set up Python
         uses: actions/setup-python@v2
@@ -32,11 +33,12 @@ jobs:
           TIMESTAMP: ${{ github.event.inputs.GAUGE }}
           BLOCK: ${{ github.event.inputs.BLOCK }}
         run: |
-          ## If no timestamp is provided, use the most recent midnight UTC.
+          # If no timestamp is provided, use the most recent midnight UTC.
           if [ -z "$TIMESTAMP" ]; then
-              current_date_utc=$(date -u "+%Y-%m-%d")              
+              current_date_utc=$(date -u "+%Y-%m-%d")
               midnight_utc=$(date -ud "$current_date_utc" +%s)
-              export TIMESTAMP="$midnight_utc"          
+              export TIMESTAMP="$midnight_utc"
+          fi
           pip3 install -r requirements.txt
           python ./generate_ecosystem_deposits.py
           git commit -A
