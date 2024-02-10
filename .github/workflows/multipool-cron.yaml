@@ -44,5 +44,6 @@ jobs:
           fi
           pip3 install -r requirements.txt
           python ./generate_ecosystem_deposits.py
-          git commit -A
+          git add -A
+          git commit -m "Github actions run - time: $TIMESTAMP,  block: $BLOCK, pool_id: $POOL_ID
           git push origin action-results
