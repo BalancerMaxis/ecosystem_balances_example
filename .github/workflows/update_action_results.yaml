@@ -15,7 +15,6 @@ jobs:
       - name: Merge Main into Action Results
         uses: peter-evans/create-pull-request@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
           branch: action-results
           base: main
           commit-message: "Merge in code/config updates from main"
