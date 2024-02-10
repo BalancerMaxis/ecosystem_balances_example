@@ -1,6 +1,8 @@
 # Ecosystem Balances 
+Available result csvs can be found in the [out/ folder on the action-results branch](https://github.com/BalancerMaxis/ecosystem_balances_example/tree/action-results/out)
+
 ## Simple Single Pool Script
-See [ecosystem_deposits_for_1_pool.md](ecosystem_deposits_for_1_pool.md) for the origianl version of this README and instructions on how to use the simpler single pool depositor from the command line.
+See [ecosystem_deposits_for_1_pool.md](ecosystem_deposits_for_1_pool.md) for the origianl version of this README and instructions on how to use the simpler single pool depositor from the command line. This README describes [V2](./generate_ecosystem_deposits.py), which is a bit more complex, but more robust with better "UX."
 
 ## Multipool Automation
 Most of this README describes [generate_ecosystem.deposits.py](generate_ecosystem_deposits.py).
