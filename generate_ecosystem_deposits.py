@@ -24,8 +24,8 @@ BLOCK = os.environ.get("BLOCK")
 TIMESTAMP = os.environ.get("TIMESTAMP")
 # Set pool_id to run on only 1 of the pool's listed on the top of this file instead of all of them
 POOL_ID = os.environ.get("POOL_ID")
-# Multichain SOON:tm:
-CHAIN = "mainnet"
+CHAIN = os.environ.get("CHAIN", "mainnet")
+
 # New pools can be added to the run_pools.json to be included in runs
 with open("run_pools.json", "r") as f:
     POOLS_TO_RUN_ON = json.load(f)[CHAIN]
@@ -43,7 +43,7 @@ else:
 
 
 
-def get_ecosystem_balances_w_csv(pool_id: str, gauge_address: str, block: int, name: str, chain="mainnet") -> Dict[
+def get_ecosystem_balances_w_csv(pool_id: str, gauge_address: str, block: int, name: str, chain=CHAIN) -> Dict[
     str, int]:
     gauges = BalGauges(chain)
     aura = Aura(chain)
@@ -121,7 +121,7 @@ def get_ecosystem_balances_w_csv(pool_id: str, gauge_address: str, block: int, n
 
     ## Build CSV
     name = name.replace("/", "-")  # /'s are path structure
-    output_file = f"out/{name}/{block}_{pool_id}.csv"
+    output_file = f"out/{chain}/{name}/{block}_{pool_id}.csv"
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
     with open(output_file, 'w') as f:
         writer = csv.writer(f)
@@ -140,7 +140,7 @@ def main():
         if POOL_ID and poolinfo["pool_id"] != POOL_ID:
             continue
         print(
-            f"\n\nRunning on {poolinfo['name']}, pool_id: {poolinfo['pool_id']}, gauge: {poolinfo['gauge']}, block: {BLOCK}\n\n")
+            f"\n\nRunning on {poolinfo['name']}, chain: {CHAIN}, pool_id: {poolinfo['pool_id']}, gauge: {poolinfo['gauge']}, block: {BLOCK}\n\n")
         try:
             get_ecosystem_balances_w_csv(
                 pool_id=poolinfo["pool_id"],
