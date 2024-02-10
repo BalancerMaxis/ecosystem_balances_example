@@ -101,13 +101,12 @@ def get_ecosystem_balances_w_csv(pool_id: str, gauge_address: str, block: int, n
         aura_shares_by_address = defaultdict(int)
 
     for address, amount in aura_shares_by_address:
-        aura_balances[address]
+        aura_balances[address] = amount
         ecosystem_balances[address] += amount
         checksum += amount
     if checksum != bpts_in_aura:
         print(
             f"Warning: {bpts_in_aura} BPTs were found in the aura proxy and zeroed out, but {checksum} of 'em where counted as Aura deposits.")
-
     ## CHeck everything
     for address, amount in ecosystem_balances.items():
         total_bpts_counted += float(amount)
