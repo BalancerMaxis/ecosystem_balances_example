@@ -1,2 +1,2 @@
-git+https://github.com/BalancerMaxis/bal_addresses@ecosystem-balances-poc-v2w
+git+https://github.com/BalancerMaxis/bal_addresses@ecosystem-balances-poc-v4
 
