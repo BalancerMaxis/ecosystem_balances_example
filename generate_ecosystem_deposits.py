@@ -1,4 +1,4 @@
-from bal_addresses import Ecosystem, BalGauges, Aura, GraphQueries
+from bal_addresses import BalGauges, Aura, GraphQueries
 import csv
 import os
 import json
