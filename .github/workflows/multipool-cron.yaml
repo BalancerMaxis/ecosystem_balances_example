@@ -34,6 +34,7 @@ jobs:
               midnight_utc=$(date -ud "$current_date_utc" +%s)
               export TIMESTAMP="$midnight_utc"
           fi
+          cat requirements.txt
           pip3 install -r requirements.txt
           python ./generate_ecosystem_deposits.py
           git config --global user.email "maxis@balancer.rocks"
