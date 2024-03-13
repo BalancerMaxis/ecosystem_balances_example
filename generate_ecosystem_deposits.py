@@ -1,4 +1,4 @@
-from bal_addresses import BalGauges, Aura, Subgraph
+from bal_addresses import BalGauges, Aura, GraphQueries
 import csv
 import os
 import json
@@ -31,7 +31,7 @@ with open("run_pools.json", "r") as f:
     POOLS_TO_RUN_ON = json.load(f)[CHAIN]
 
 # Set block and timestamp based on logic if they are not specified
-q = Subgraph(CHAIN)
+q = GraphQueries(CHAIN)
 if not BLOCK:
     if not TIMESTAMP:
         TIMESTAMP = datetime.now(timezone.utc).timestamp() - 300  # Use 5 minutes ago to make sure subgraphs are up to date
