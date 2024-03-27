@@ -77,7 +77,7 @@ To understand user balances of one component of the pool, you'll need to multipl
 If you are going to use this in production, speak to the Maxis.  We can set you up with a fork repo where you have more control and keep an eye on things.
 
 ## How can I understand this more?
-Tag 0.0.2 of this repo pulls this [commit on bal_addresses](https://github.com/BalancerMaxis/bal_addresses/tree/83a122b0349cde23a0643b83e4adf50859af24fe/bal_addresses).  You can find the classes used in this code there.  You can find the graphql queries and endpoints used [here](https://github.com/BalancerMaxis/bal_addresses/blob/83a122b0349cde23a0643b83e4adf50859af24fe/bal_addresses/queries.py)
+Tag 0.0.3 of this repo pulls this [commit on bal_addresses](https://github.com/BalancerMaxis/bal_addresses/tree/42f24bc7b2a25c1144fee6ee1bf01a46e2575b15/bal_addresses).  You can find the classes used in this code there.  You can find the graphql queries and endpoints used [here](https://github.com/BalancerMaxis/bal_addresses/blob/42f24bc7b2a25c1144fee6ee1bf01a46e2575b15/bal_addresses/queries.py)
 
 A high level understanding of the calculation logic can be understood by reading through the logic of [generate_ecosystem_deposits.py](./generate_ecosystem_deposits.py)
 

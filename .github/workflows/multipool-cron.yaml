@@ -34,12 +34,11 @@ jobs:
               midnight_utc=$(date -ud "$current_date_utc" +%s)
               export TIMESTAMP="$midnight_utc"
           fi
+          cat requirements.txt
           pip3 install -r requirements.txt
           python ./generate_ecosystem_deposits.py
-          exit_status=$?
           git config --global user.email "maxis@balancer.rocks"
           git config --global user.name "Github Action"
           git add -A
-          git commit -m "Github actions run - time: $TIMESTAMP,  block: $BLOCK, pool_id: $POOL_ID"
-          git push origin action-results
-          exit $exit_status
+          git commit -m "Github actions run - time: $TIMESTAMP,  block: $BLOCK, pool_id: $POOL_ID" || true
+          git push origin action-results || true
