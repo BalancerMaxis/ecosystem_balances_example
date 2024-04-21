@@ -36,6 +36,7 @@ jobs:
           fi
           cat requirements.txt
           pip3 install -r requirements.txt
+          pip install gql
           python ./generate_ecosystem_deposits.py
           git config --global user.email "maxis@balancer.rocks"
           git config --global user.name "Github Action"
