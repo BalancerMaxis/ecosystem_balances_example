@@ -41,6 +41,19 @@ def set_block_and_timestamp(chain: str, block=None, timestamp=None) -> (int, int
     return (block, timestamp)
 
 
+def get_tokens_per_bpt(chain:str, block: int, poolid: str):
+    queries = Subgraph(chain)
+    result = queries.fetch_graphql_data("core", "get_pool_details", {"id": poolid, "block": block})
+    result = result["pool"]
+    bpt_total_shares = result["totalShares"]
+    bpt_address = result["address"]
+    tokens_per_bpt = {}
+    for tokeninfo in result["tokens"]:
+        if tokeninfo["address"].lower() == bpt_address.lower():
+            continue
+        tokens_per_bpt[tokeninfo["address"]] = float(tokeninfo["balance"]) / float(bpt_total_shares)
+    return tokens_per_bpt
+
 def get_ecosystem_balances_w_csv(pool_id: str, gauge_address: str, block: int, name: str, chain="mainnet") -> Dict[
     str, int]:
     gauges = BalPoolsGauges(chain)
@@ -135,13 +148,12 @@ def main():
     for chain, poolinfos in POOLS_TO_RUN_ON_BY_CHAIN.items():
         # Figure out the block and timestmap for this chain using env vars as inputs
         block, timestamp = set_block_and_timestamp(chain, BLOCK, TIMESTAMP)
-        print(f"Using block {block} on chain {chain} derived from unixtime(UTC): {timestamp}")
+        print(f"Using block {block} on chain {chain} derived from unixtime(UTC): {timestamp}\n\n")
         for poolinfo in poolinfos:
             if POOL_ID and poolinfo["pool_id"] != POOL_ID:
                 continue
             print(
-                f"\n\nRunning on {poolinfo['name']}, pool_id: {poolinfo['pool_id']}, gauge: {poolinfo['gauge']}, block: {BLOCK}\n\n")
-
+                f"\nRunning on {poolinfo['name']}, pool_id: {poolinfo['pool_id']}, gauge: {poolinfo['gauge']}, block: {block}\n")
             get_ecosystem_balances_w_csv(
                 pool_id=poolinfo["pool_id"],
                 gauge_address=poolinfo["gauge"],
@@ -149,6 +161,16 @@ def main():
                 chain=chain,
                 block=block
             )
+            # Dump Tokens per BPT json
+            print(block)
+            tokens_per_bpt = get_tokens_per_bpt(chain, block, poolinfo['pool_id'])
+            dir_name = poolinfo["name"].replace("/", "-")  # /'s are path structure
+            output_file = f"out/{chain}/{dir_name}/{block}_{poolinfo['pool_id']}.tokens_per_bpt.json"
+
+            os.makedirs(os.path.dirname(output_file), exist_ok=True)
+            with open(output_file, 'w') as f:
+                json.dump(tokens_per_bpt, f)
+
 
 
 

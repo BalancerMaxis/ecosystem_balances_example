@@ -38,11 +38,32 @@
       "gauge": "0xd955f46b110583e14644665c69e26cd8126070ec"
     }
   ],
-  "arbitrum":[
+  "arbitrum":
+  [
     {
-      "name": "wstETH/WETH",
-      "pool_id": "0x9791d590788598535278552eecd4b211bfc790cb000000000000000000000498",
-      "gauge": "0x260cbb867359a1084eC97de4157d06ca74e89415"
+      "name": "ezETH/wETH",
+      "pool_id": "0xb61371ab661b1acec81c699854d2f911070c059e000000000000000000000516",
+      "gauge": "0x7c4a6b0c16ca99e65822cc531403ce2f8a20a912"
+    }
+  ],
+  "optimism":
+  [
+    {
+      "name": "weETH/wETH",
+      "pool_id": "0x250a1381f79593b96b462fb0d575c75795f8033200000000000000000000012f",
+      "gauge": "0x0290377d73c7cdf57e24945dfc4e2056434a8a11"
+    },
+    {
+      "name": "rETH/ankrETH",
+      "pool_id": "0x004700ba0a4f5f22e1e78a277fca55e36f47e09c000000000000000000000104",
+      "gauge": "0xc19055c2ff199ba6190505ef776573c8b7cc676a"
+    }
+  ],
+  "base": [
+    {
+      "name": "rETH/ETH",
+      "pool_id": "0xc771c1a5905420daec317b154eb13e4198ba97d0000000000000000000000023",
+      "gauge": "0x8d118063b521e0cb9947a934be90f7e32d02b158"
     }
   ],
   "zkevm": [
@@ -53,4 +74,3 @@
     }
   ]
 }
-
