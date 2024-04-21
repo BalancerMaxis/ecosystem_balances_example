@@ -31,13 +31,6 @@
       "gauge": "0xd98ed0426d18b115d6388923803e33ad8aaf11f8"
     }
   ],
-  "gnosis": [
-    {
-      "name": "wstETH/WETH",
-      "pool_id": "0xbad20c15a773bf03ab973302f61fabcea5101f0a000000000000000000000034",
-      "gauge": "0x27519f69b2ac912aeb6fe066180fb25a17c71755"
-    }
-  ],
   "polygon": [
     {
       "name": "MATICx/wMATIC",
