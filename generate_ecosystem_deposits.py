@@ -32,7 +32,7 @@ def set_block_and_timestamp(chain: str, block=None, timestamp=None) -> (int, int
     q = Subgraph(chain)
     if not block:
         if not timestamp:
-            timestamp = datetime.now(timezone.utc).timestamp() - 300  # Use 5 minutes ago to make sure subgraphs are up to date
+            timestamp = datetime.now(timezone.utc).timestamp() - 600  # Use 10 minutes ago to make sure subgraphs are up to date
         block = q.get_first_block_after_utc_timestamp(int(timestamp))
         block = int(block)
         timestamp = int(timestamp)
