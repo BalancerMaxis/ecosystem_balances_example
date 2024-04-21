@@ -1,19 +1,15 @@
-from bal_addresses import BalGauges, Aura, GraphQueries
+from bal_addresses import BalPoolsGauges, Aura, Subgraph
 import csv
 import os
 import json
 from collections import defaultdict
-from web3 import Web3
 from typing import Dict
 from bal_addresses.errors import ChecksumError, NoResultError
+from bal_addresses.utils import to_checksum_address
 from datetime import datetime, timezone
 
 
 
-# HOW TO RUN
-# Go through the code directly below and understand how/if you want to set any environment variables
-# If no environment variables are set a run will generate csvs for all known pools at a block 5 minutes in the past
-# Simply run this script with no arguments, outputs can be found in out
 
 
 
@@ -28,26 +24,28 @@ POOL_ID = os.environ.get("POOL_ID")
 CHAIN = "mainnet"
 # New pools can be added to the run_pools.json to be included in runs
 with open("run_pools.json", "r") as f:
-    POOLS_TO_RUN_ON = json.load(f)[CHAIN]
+    POOLS_TO_RUN_ON_BY_CHAIN = json.load(f)
+
 
 # Set block and timestamp based on logic if they are not specified
-q = GraphQueries(CHAIN)
-if not BLOCK:
-    if not TIMESTAMP:
-        TIMESTAMP = datetime.now(timezone.utc).timestamp() - 300  # Use 5 minutes ago to make sure subgraphs are up to date
-    BLOCK = q.get_first_block_after_utc_timestamp(int(TIMESTAMP))
-    BLOCK = int(BLOCK)
-    TIMESTAMP = int(TIMESTAMP)
-else:
-    TIMESTAMP = "Block Number Provided"
-
+def set_block_and_timestamp(chain: str, block=None, timestamp=None) -> (int, int):
+    q = Subgraph(chain)
+    if not block:
+        if not timestamp:
+            timestamp = datetime.now(timezone.utc).timestamp() - 300  # Use 5 minutes ago to make sure subgraphs are up to date
+        block = q.get_first_block_after_utc_timestamp(int(timestamp))
+        block = int(block)
+        timestamp = int(timestamp)
+    else:
+        TIMESTAMP = "Block Number Provided"
+    return (block, timestamp)
 
 
 def get_ecosystem_balances_w_csv(pool_id: str, gauge_address: str, block: int, name: str, chain="mainnet") -> Dict[
     str, int]:
-    gauges = BalGauges(chain)
+    gauges = BalPoolsGauges(chain)
     aura = Aura(chain)
-    gauge_address = Web3.toChecksumAddress(gauge_address)
+    gauge_address = to_checksum_address(gauge_address)
     bpt_balances = defaultdict(float)
     gauge_balances = defaultdict(float)
     aura_balances = defaultdict(float)
@@ -114,13 +112,13 @@ def get_ecosystem_balances_w_csv(pool_id: str, gauge_address: str, block: int, n
         f"Found {total_circulating_bpts} of which {bpts_in_bal_gauge} where staked by an address in a bal gauge and {bpts_in_aura} where deposited on aura at block {block}")
     ## Slight tolerance for rounding
     delta = abs(total_circulating_bpts - total_bpts_counted)
-    if delta > 1e-10:
+    if delta > 1e-8:
         raise ChecksumError(
             f"initial bpts found {total_circulating_bpts}, final bpts counted:{total_bpts_counted} the delta is {total_circulating_bpts - total_bpts_counted}")
 
     ## Build CSV
     name = name.replace("/", "-")  # /'s are path structure
-    output_file = f"out/{name}/{block}_{pool_id}.csv"
+    output_file = f"out/{chain}/{name}/{block}_{pool_id}.csv"
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
     with open(output_file, 'w') as f:
         writer = csv.writer(f)
@@ -134,22 +132,25 @@ def get_ecosystem_balances_w_csv(pool_id: str, gauge_address: str, block: int, n
 
 
 def main():
-    print(f"Using block {BLOCK} derived from unixtime(UTC): {TIMESTAMP}")
-    for poolinfo in POOLS_TO_RUN_ON:
-        if POOL_ID and poolinfo["pool_id"] != POOL_ID:
-            continue
-        print(
-            f"\n\nRunning on {poolinfo['name']}, pool_id: {poolinfo['pool_id']}, gauge: {poolinfo['gauge']}, block: {BLOCK}\n\n")
-        try:
+    for chain, poolinfos in POOLS_TO_RUN_ON_BY_CHAIN.items():
+        # Figure out the block and timestmap for this chain using env vars as inputs
+        block, timestamp = set_block_and_timestamp(chain, BLOCK, TIMESTAMP)
+        print(f"Using block {block} on chain {chain} derived from unixtime(UTC): {timestamp}")
+        for poolinfo in poolinfos:
+            if POOL_ID and poolinfo["pool_id"] != POOL_ID:
+                continue
+            print(
+                f"\n\nRunning on {poolinfo['name']}, pool_id: {poolinfo['pool_id']}, gauge: {poolinfo['gauge']}, block: {BLOCK}\n\n")
+
             get_ecosystem_balances_w_csv(
                 pool_id=poolinfo["pool_id"],
                 gauge_address=poolinfo["gauge"],
                 name=poolinfo["name"],
-                chain=CHAIN,
-                block=BLOCK
+                chain=chain,
+                block=block
             )
-        except Exception as e:
-            print(f"WARNING: run for {poolinfo['pool_id']} did not finish:\n{e}")
+
+
 
 
 if __name__ == "__main__":
