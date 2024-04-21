@@ -2,7 +2,7 @@ name: Generate Ecosystem Deposit CSVs
 
 on:
   schedule:
-    - cron: "0 * * * *"
+    - cron: "10 * * * *"
   workflow_dispatch:
     inputs:
       POOL_ID:
