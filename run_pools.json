@@ -30,6 +30,27 @@
       "pool_id": "0xdedb11a6a23263469567c2881a9b9f8629ee0041000000000000000000000669",
       "gauge": "0xd98ed0426d18b115d6388923803e33ad8aaf11f8"
     }
+  ],
+  "polygon": [
+    {
+      "name": "MATICx/wMATIC",
+      "pool_id": "0xcd78a20c597e367a4e478a2411ceb790604d7c8f000000000000000000000c22",
+      "gauge": "0xd955f46b110583e14644665c69e26cd8126070ec"
+    }
+  ],
+  "arbitrum":[
+    {
+      "name": "wstETH/WETH",
+      "pool_id": "0x9791d590788598535278552eecd4b211bfc790cb000000000000000000000498",
+      "gauge": "0x260cbb867359a1084eC97de4157d06ca74e89415"
+    }
+  ],
+  "zkevm": [
+    {
+      "name": "rETH/WETH",
+      "pool_id": "0x1d0a8a31cdb04efac3153237526fb15cc65a252000000000000000000000000f",
+      "gauge": "0x7733650c7aaF2074FD1fCf98f70cbC09138E1Ea5"
+    }
   ]
 }
 
